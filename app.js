@@ -8,9 +8,12 @@ function Book(title, author, isbn) {
 // UI constructor
 function UI() {}
 
+// Add Book To List
 UI.prototype.addBookToList = function(book) {
   const list = document.getElementById('book-list');
+  // Create tr element
   const row = document.createElement('tr');
+  // Insert cols
   row.innerHTML = `
   <td>${book.title}</td>
   <td>${book.author}</td>
@@ -18,6 +21,26 @@ UI.prototype.addBookToList = function(book) {
   <td><a href="#" class="delete">X</a></td>
   `;
   list.appendChild(row);
+};
+
+// Show alert
+UI.prototype.showAlert = function(message, className) {
+  // Create div
+  const div = document.createElement('div');
+  // Create div
+  div.className = `alert ${className}`;
+  // Add text
+  div.appendChild(document.createTextNode(message));
+  // Get parent
+  const container = document.querySelector('.container');
+  const form = document.querySelector('#book-form');
+  // Insert alert
+  container.insertBefore(div, form);
+
+  // Timeout after 3 sec
+  setTimeout(function() {
+    document.querySelector('.alert').remove();
+  }, 3000);
 };
 
 // Clear fields
@@ -40,11 +63,19 @@ document.getElementById('book-form').addEventListener('submit', function(e) {
   // Insatantiate UI
   const ui = new UI();
 
-  // Add book to list
-  ui.addBookToList(book);
+  // Validate
+  if (title === '' || author === '' || isbn === '') {
+    // Error alert
+    ui.showAlert('Пожалуйста заполните поля формы', 'error');
+  } else {
+    // Add book to list
+    ui.addBookToList(book);
 
-  // Clear fields
-  ui.clearFields();
+    // Show success
+    ui.showAlert('Книга добавлена', 'success');
+    // Clear fields
+    ui.clearFields();
+  }
 
   e.preventDefault();
 });
